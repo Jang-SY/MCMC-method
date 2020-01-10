@@ -111,7 +111,7 @@ class Gibbs(object):
     def graph_y(self):
         n = []
         value = []
-        n = range(0,1,0.1)
+        n = np.arange(0, 1, 0.001)
         for i in range(len(n)):
             value.append(self.marginal_y(n[i]))
 
