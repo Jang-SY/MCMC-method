@@ -98,12 +98,12 @@ class Gibbs(object):
         plt.figure(2)
         plt.plot(n, value)
         plt.show()
-
+        
 # A better approach is to use the average of the conditional densities p(y | x = xi), 
     def marginal_y(self, y):
         base = 0
         for i in range(len(self.arr_x)):
-            base += m.pow(y,self.arr_x[i]+self.alpha-1)*m.pow(1-y,self.n-self.arr_x[i]+self.beta-1)
+            base += m.gamma(self.n+self.alpha+self.beta)/(m.gamma(self.arr_x[i]+self.alpha)*m.gamma(self.n-self.arr_x[i]+self.beta))*m.pow(y,self.arr_x[i]+self.alpha-1)*m.pow(1-y,self.n-self.arr_x[i]+self.beta-1)
 
         base /= len(self.arr_x)
         return base
@@ -120,10 +120,9 @@ class Gibbs(object):
         plt.show()
 
 if __name__ == "__main__":     
-    gibbs = Gibbs(100,2,5,y0=0.5)
+    gibbs = Gibbs(100,2,2,y0=0.5)
     gibbs.sampling(100)
     gibbs.graph_x()
     gibbs.graph_y()
     gibbs.MC_estimate()
-    
     
