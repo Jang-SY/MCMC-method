@@ -5,6 +5,7 @@
 import numpy as np
 import math as m
 from matplotlib import pyplot as plt
+from scipy import stats as st
 
 class Gibbs(object):
     def __init__(self, n, alpha, beta, x0 = None, y0 = None):
@@ -76,14 +77,14 @@ class Gibbs(object):
 # Monte-Carlo (MC) estimate
     def MC_estimate(self):
         x_bar = np.mean(self.arr_x)
-        y_bar = np.mean(self.arr_y)
+        y_bar = round(np.mean(self.arr_y),2)
         print('MC_estimate = ', x_bar,',', y_bar)
 
 # A better approach is to use the average of the conditional densities p(x | y = yi), 
     def marginal_x(self, x):
         base = 0
         for i in range(len(self.arr_y)):
-            base += m.factorial(self.n)*((m.pow(self.arr_y[i],x)*m.pow(1-self.arr_y[i],self.n-x))/(m.factorial(x)*m.factorial(self.n-x)))
+            base += st.binom.pmf(x, self.n, self.arr_y[i])
 
         base /= len(self.arr_y)
         return base
@@ -96,14 +97,17 @@ class Gibbs(object):
             value.append(self.marginal_x(i))
 
         plt.figure(2)
-        plt.plot(n, value)
+        plt.plot(n, value,'bo')
+        plt.xlabel('x')
+        plt.ylabel('p(x)')
+        plt.title('Approximate Marginal_x Distributions')
         plt.show()
         
 # A better approach is to use the average of the conditional densities p(y | x = xi), 
     def marginal_y(self, y):
         base = 0
         for i in range(len(self.arr_x)):
-            base += m.gamma(self.n+self.alpha+self.beta)/(m.gamma(self.arr_x[i]+self.alpha)*m.gamma(self.n-self.arr_x[i]+self.beta))*m.pow(y,self.arr_x[i]+self.alpha-1)*m.pow(1-y,self.n-self.arr_x[i]+self.beta-1)
+            base += st.beta.pdf(y,self.arr_x[i]+self.alpha,self.n-self.arr_x[i]+self.beta)
 
         base /= len(self.arr_x)
         return base
@@ -111,12 +115,15 @@ class Gibbs(object):
     def graph_y(self):
         n = []
         value = []
-        n = np.arange(0, 1, 0.001)
+        n = np.linspace(0, 1.0, 100)
         for i in range(len(n)):
             value.append(self.marginal_y(n[i]))
 
         plt.figure(3)
         plt.plot(n, value)
+        plt.xlabel('y')
+        plt.ylabel('p(y)')
+        plt.title('Approximate Marginal_y Distributions')
         plt.show()
 
 if __name__ == "__main__":     
@@ -125,4 +132,3 @@ if __name__ == "__main__":
     gibbs.graph_x()
     gibbs.graph_y()
     gibbs.MC_estimate()
-    
