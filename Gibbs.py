@@ -64,13 +64,13 @@ class Gibbs(object):
                     self.x = self.x_given_y(y)
                     self.arr_x.append(self.x)
 
-        plt.figure(1)
-        plt.scatter(self.arr_x,self.arr_y)
-        plt.scatter(self.arr_x[number-1], self.arr_y[number-1],color='r')
-        plt.xlabel('x value')
-        plt.ylabel('y value')
-        plt.title('Gibbs Sampling')
-        plt.show()
+        #plt.figure(1)
+        #plt.scatter(self.arr_x,self.arr_y)
+        #plt.scatter(self.arr_x[number-1], self.arr_y[number-1],color='r')
+        #plt.xlabel('x value')
+        #plt.ylabel('y value')
+        #plt.title('Gibbs Sampling')
+        #plt.show()
 
 
 # Using the Gibbs Sampler to Approximate Marginal Distributions
@@ -97,7 +97,7 @@ class Gibbs(object):
             value.append(self.marginal_x(i))
 
         plt.figure(2)
-        plt.plot(n, value,'bo')
+        plt.plot(n, value,'bo',n,st.binom.pmf(n, 100, 0.5),'ro')
         plt.xlabel('x')
         plt.ylabel('p(x)')
         plt.title('Approximate Marginal_x Distributions')
@@ -120,7 +120,7 @@ class Gibbs(object):
             value.append(self.marginal_y(n[i]))
 
         plt.figure(3)
-        plt.plot(n, value)
+        plt.plot(n, value,'b',n,st.beta.pdf(n,2,2),'r')
         plt.xlabel('y')
         plt.ylabel('p(y)')
         plt.title('Approximate Marginal_y Distributions')
